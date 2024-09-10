@@ -12,6 +12,9 @@ DATA_DIR=$HOME/Curso_ensamble_genomas/data
 total_programas=14
 programas_instalados=0
 
+echo "VERSION 5##%%%"
+
+
 # Eliminar los alias anteriores del .zshrc
 sed -i '' '/alias fastqc=/d' ~/.zshrc
 sed -i '' '/alias trimmomatic=/d' ~/.zshrc
