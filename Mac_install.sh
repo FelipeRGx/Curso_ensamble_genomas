@@ -199,7 +199,10 @@ check_success "QUAST"
 echo -n "Instalando gdown	  ---->	"
 
 echo -n "Instalando gdown (método 1)	  ---->	"
+
+
 brew install -y python3 python3-pip  > /dev/null 2>&1
+python3 -m pip install --upgrade pip
 (sudo pip3 install gdown > /dev/null 2>&1) & spinner
 (sudo pip install gdown --break-system-packages> /dev/null 2>&1) & spinner
 
