@@ -171,16 +171,23 @@ echo 'alias gatk="'$BASE_DIR'/gatk-4.2.5.0/gatk"' >> ~/.zshrc
 echo "Instalando QUAST	  ---->	"
 (git clone https://github.com/ablab/quast.git $BASE_DIR/quast > /dev/null 2>&1) & spinner
 
+# Cambiar permisos del directorio para evitar problemas
+chmod -R 755 $BASE_DIR
+
 # Corrección en jsontemplate.py (cgi.escape -> html.escape)
 sed -i '' 's/cgi.escape/html.escape/g' $BASE_DIR/quast/quast_libs/site_packages/jsontemplate/jsontemplate.py
 sed -i '' '1i\
 import html' $BASE_DIR/quast/quast_libs/site_packages/jsontemplate/jsontemplate.py
 
-# Instalación de dependencias y permisos
+# Instalación de dependencias en la carpeta BASE_DIR
 cd $BASE_DIR/quast
-pip3 install -r requirements.txt > /dev/null 2>&1
-chmod +x quast.py
-python3 setup.py install > /dev/null 2>&1
+pip3 install -r requirements.txt --target=$BASE_DIR/quast_dependencies > /dev/null 2>&1
+
+# Instalación de QUAST en BASE_DIR usando --prefix
+python3 setup.py install --prefix=$BASE_DIR > /dev/null 2>&1
+
+# Asegurar permisos de ejecución
+chmod +x $BASE_DIR/quast/quast.py
 
 # Verificación de instalación
 echo 'alias quast="'$BASE_DIR'/quast/quast.py"' >> ~/.zshrc
