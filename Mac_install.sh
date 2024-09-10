@@ -12,19 +12,19 @@ DATA_DIR=~/Curso_ensamble_genomas/data
 total_programas=14
 programas_instalados=0
 
-sed -i '' '/alias fastqc=/d' ~/.bashrc
-sed -i '' '/alias trimmomatic=/d' ~/.bashrc
-sed -i '' '/alias bwa=/d' ~/.bashrc
-sed -i '' '/alias samtools=/d' ~/.bashrc
-sed -i '' '/alias spades=/d' ~/.bashrc
-sed -i '' '/alias pilon=/d' ~/.bashrc
-sed -i '' '/alias prokka=/d' ~/.bashrc
-sed -i '' '/alias bcftools=/d' ~/.bashrc
-sed -i '' '/alias fasterq-dump=/d' ~/.bashrc
-sed -i '' '/alias gatk=/d' ~/.bashrc
-sed -i '' '/alias quast=/d' ~/.bashrc
-source ~/.bashrc
-
+# Eliminar los alias anteriores del .zshrc en lugar de .bashrc
+sed -i '' '/alias fastqc=/d' ~/.zshrc
+sed -i '' '/alias trimmomatic=/d' ~/.zshrc
+sed -i '' '/alias bwa=/d' ~/.zshrc
+sed -i '' '/alias samtools=/d' ~/.zshrc
+sed -i '' '/alias spades=/d' ~/.zshrc
+sed -i '' '/alias pilon=/d' ~/.zshrc
+sed -i '' '/alias prokka=/d' ~/.zshrc
+sed -i '' '/alias bcftools=/d' ~/.zshrc
+sed -i '' '/alias fasterq-dump=/d' ~/.zshrc
+sed -i '' '/alias gatk=/d' ~/.zshrc
+sed -i '' '/alias quast=/d' ~/.zshrc
+source ~/.zshrc
 
 # Spinner de carga
 spinner() {
@@ -88,7 +88,7 @@ check_success "unzip"
 echo -n "Instalando FastQC	  ---->	"
 (brew install fastqc > /dev/null 2>&1) & spinner
 check_success "FastQC"
-echo 'alias fastqc="/usr/local/bin/fastqc"' >> ~/.bashrc
+echo 'alias fastqc="/usr/local/bin/fastqc"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de Trimmomatic
@@ -96,7 +96,7 @@ echo 'alias fastqc="/usr/local/bin/fastqc"' >> ~/.bashrc
 echo -n "Instalando Trimmomatic	  ---->	"
 (brew install trimmomatic > /dev/null 2>&1) & spinner
 check_success "Trimmomatic"
-echo 'alias trimmomatic="java -jar /usr/local/opt/trimmomatic/trimmomatic.jar"' >> ~/.bashrc
+echo 'alias trimmomatic="java -jar /usr/local/opt/trimmomatic/trimmomatic.jar"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de BWA
@@ -104,7 +104,7 @@ echo 'alias trimmomatic="java -jar /usr/local/opt/trimmomatic/trimmomatic.jar"' 
 echo -n "Instalando BWA		  ---->	"
 (brew install bwa > /dev/null 2>&1) & spinner
 check_success "BWA"
-echo 'alias bwa="/usr/local/bin/bwa"' >> ~/.bashrc
+echo 'alias bwa="/usr/local/bin/bwa"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de Samtools
@@ -112,7 +112,7 @@ echo 'alias bwa="/usr/local/bin/bwa"' >> ~/.bashrc
 echo -n "Instalando Samtools	  ---->	"
 (brew install samtools > /dev/null 2>&1) & spinner
 check_success "Samtools"
-echo 'alias samtools="/usr/local/bin/samtools"' >> ~/.bashrc
+echo 'alias samtools="/usr/local/bin/samtools"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de SPAdes
@@ -120,7 +120,7 @@ echo 'alias samtools="/usr/local/bin/samtools"' >> ~/.bashrc
 echo -n "Instalando SPAdes	  ---->	"
 (brew install spades > /dev/null 2>&1) & spinner
 check_success "SPAdes"
-echo 'alias spades="/usr/local/bin/spades.py"' >> ~/.bashrc
+echo 'alias spades="/usr/local/bin/spades.py"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de Pilon
@@ -128,7 +128,7 @@ echo 'alias spades="/usr/local/bin/spades.py"' >> ~/.bashrc
 echo -n "Instalando Pilon	  ---->	"
 (brew install pilon > /dev/null 2>&1) & spinner
 check_success "Pilon"
-echo 'alias pilon="/usr/local/bin/pilon"' >> ~/.bashrc
+echo 'alias pilon="/usr/local/bin/pilon"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de Prokka
@@ -136,7 +136,7 @@ echo 'alias pilon="/usr/local/bin/pilon"' >> ~/.bashrc
 echo -n "Instalando Prokka	  ---->	"
 (brew install prokka > /dev/null 2>&1) & spinner
 check_success "Prokka"
-echo 'alias prokka="/usr/local/bin/prokka"' >> ~/.bashrc
+echo 'alias prokka="/usr/local/bin/prokka"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de BCFtools
@@ -144,7 +144,7 @@ echo 'alias prokka="/usr/local/bin/prokka"' >> ~/.bashrc
 echo -n "Instalando BCFtools	  ---->	"
 (brew install bcftools > /dev/null 2>&1) & spinner
 check_success "BCFtools"
-echo 'alias bcftools="/usr/local/bin/bcftools"' >> ~/.bashrc
+echo 'alias bcftools="/usr/local/bin/bcftools"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de SRA-Toolkit
@@ -152,7 +152,7 @@ echo 'alias bcftools="/usr/local/bin/bcftools"' >> ~/.bashrc
 echo -n "Instalando SRA-Toolkit	  ---->	"
 (brew install sra-tools > /dev/null 2>&1) & spinner
 check_success "SRA-Toolkit"
-echo 'alias fasterq-dump="/usr/local/bin/fasterq-dump"' >> ~/.bashrc
+echo 'alias fasterq-dump="/usr/local/bin/fasterq-dump"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de GATK (descarga con wget)
@@ -160,8 +160,8 @@ echo 'alias fasterq-dump="/usr/local/bin/fasterq-dump"' >> ~/.bashrc
 echo -n "Instalando GATK		  ---->	"
 (wget https://github.com/broadinstitute/gatk/releases/download/4.2.5.0/gatk-4.2.5.0.zip -P $BASE_DIR > /dev/null 2>&1 && unzip $BASE_DIR/gatk-4.2.5.0.zip -d $BASE_DIR > /dev/null 2>&1 && rm $BASE_DIR/gatk-4.2.5.0.zip) & spinner
 check_success "GATK"
-sudo chmod +x $BASE_DIR/gatk-4.2.5.0/gatk
-echo 'alias gatk="'$BASE_DIR'/gatk-4.2.5.0/gatk"' >> ~/.bashrc
+chmod +x $BASE_DIR/gatk-4.2.5.0/gatk
+echo 'alias gatk="'$BASE_DIR'/gatk-4.2.5.0/gatk"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de QUAST desde GitHub (con corrección)
@@ -177,11 +177,11 @@ import html' $BASE_DIR/quast/quast_libs/site_packages/jsontemplate/jsontemplate.
 # Instalación de dependencias y permisos
 cd $BASE_DIR/quast
 pip3 install -r requirements.txt > /dev/null 2>&1
-sudo chmod +x quast.py
+chmod +x quast.py
 python3 setup.py install > /dev/null 2>&1
 
 # Verificación de instalación
-echo 'alias quast="'$BASE_DIR'/quast/quast.py"' >> ~/.bashrc
+echo 'alias quast="'$BASE_DIR'/quast/quast.py"' >> ~/.zshrc
 check_success "QUAST"
 
 cd
@@ -204,13 +204,7 @@ gdown 151PeMSeGnQJstXOvMOn8ArbbG49JIXes -O $DATA_DIR/reference.fasta
 # Descomprimir el archivo ZIP
 # ----------------------------------------------
 echo "Descomprimiendo archivo ZIP	  ---->	"
-sudo tar -xvzf $DATA_DIR/fastq.zip -C $DATA_DIR
+tar -xvzf $DATA_DIR/fastq.zip -C $DATA_DIR
 
-source ~/.bashrc
-
-
-# ----------------------------------------------
-# Resumen de la instalación
-# ----------------------------------------------
-echo "Instalación completada: $programas_instalados/$total_programas programas instalados correctamente."
-cd
+# Cargar el archivo .zshrc para aplicar los alias
+source ~/.zsh
