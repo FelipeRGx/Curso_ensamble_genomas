@@ -190,7 +190,7 @@ gdown 151PeMSeGnQJstXOvMOn8ArbbG49JIXes -O $DATA_DIR/reference.fasta
 # Descomprimir el archivo ZIP
 # ----------------------------------------------
 echo "Descomprimiendo archivo ZIP	  ---->	"
-unzip $DATA_DIR/fastq.zip -d $DATA_DIR
+sudo tar -xvzf $DATA_DIR/fastq.zip -C $DATA_DIR
 
 # ----------------------------------------------
 # Resumen de la instalación
