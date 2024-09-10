@@ -205,8 +205,12 @@ if ! command -v gdown &> /dev/null; then
   check_success "gdown (método alternativo)"
 fi
 
+if command -v gdown &> /dev/null; then
+  echo "gdown se instaló correctamente."
+else
+  echo "Error: Ningún método pudo instalar gdown."
+fi
 
-(pip3 install gdown > /dev/null 2>&1) & spinner
 check_success "gdown"
 
 # ----------------------------------------------
