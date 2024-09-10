@@ -1,12 +1,13 @@
 #!/bin/bash
 
 # Crear la carpeta 'programas' y 'data' en el directorio actual
-mkdir -p ~/Curso_ensamble_genomas/programas
-mkdir -p ~/Curso_ensamble_genomas/data
+cd
+mkdir -p ./Curso_ensamble_genomas/programas
+mkdir -p ./Curso_ensamble_genomas/data
 
 # Definir variable BASE_DIR para la ruta de instalación
-BASE_DIR=~/Curso_ensamble_genomas/programas
-DATA_DIR=~/Curso_ensamble_genomas/data
+BASE_DIR=./Curso_ensamble_genomas/programas
+DATA_DIR=./Curso_ensamble_genomas/data
 
 # Contador para el éxito de instalaciones
 total_programas=14
@@ -96,7 +97,7 @@ echo 'alias fastqc="/usr/local/bin/fastqc"' >> ~/.zshrc
 echo -n "Instalando Trimmomatic	  ---->	"
 (brew install trimmomatic > /dev/null 2>&1) & spinner
 check_success "Trimmomatic"
-echo 'alias trimmomatic="java -jar /usr/local/opt/trimmomatic/trimmomatic.jar"' >> ~/.zshrc
+#echo 'alias trimmomatic="java -jar /usr/local/opt/trimmomatic/trimmomatic.jar"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de BWA
@@ -209,3 +210,4 @@ tar -xvzf $DATA_DIR/fastq.zip -C $DATA_DIR
 
 # Cargar el archivo .zshrc para aplicar los alias
 source ~/.zshrc
+cd
