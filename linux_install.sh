@@ -188,6 +188,7 @@ cd
 # Instalación de gdown para descargas grandes desde Google Drive
 # ----------------------------------------------
 echo -n "Instalando gdown	  ---->	"
+sudo apt-get install python3-pip
 (sudo pip3 install gdown > /dev/null 2>&1) & spinner
 check_success "gdown\n\n\n"
 
@@ -195,7 +196,6 @@ check_success "gdown\n\n\n"
 # Descarga de archivos desde Google Drive usando gdown
 # ----------------------------------------------
 echo "Descargando archivos desde Google Drive en ~/data	  ---->	"
-sudo apt-get install python3-pip
 gdown  1aZ6iKs-Z7HymPiVQ2t1xf-_ajj4CK-03 -O $DATA_DIR/fastq.zip
 gdown  151PeMSeGnQJstXOvMOn8ArbbG49JIXes -O $DATA_DIR/reference.fasta
 
