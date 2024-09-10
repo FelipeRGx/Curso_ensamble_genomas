@@ -206,18 +206,13 @@ python3 -m pip install --upgrade pip
 (sudo pip3 install gdown > /dev/null 2>&1) & spinner
 (sudo pip install gdown --break-system-packages> /dev/null 2>&1) & spinner
 
+python3 -m venv myenv
+source myenv/bin/activate
+pip install --upgrade pip
+pip3 install gdown
+
 check_success "gdown"
 
-if ! command -v gdown &> /dev/null; then
-  echo -n "Intentando instalar gdown desde archivo tar.gz ----> "
-  wget https://files.pythonhosted.org/packages/09/6a/37e6b70c5bda3161e40265861e63b64a86bfc6ca6a8f1c35328a675c84fd/gdown-5.2.0.tar.gz -O gdown.tar.gz
-  tar -xzf gdown.tar.gz
-  cd gdown-5.2.0
-  (pip3 install . > /dev/null 2>&1) & spinner
-  cd ..
-  #rm -rf gdown-5.2.0 gdown.tar.gz
-  check_success "gdown (método alternativo)"
-fi
 
 # Verificar si gdown está disponible después de ambos métodos
 if command -v gdown &> /dev/null; then
