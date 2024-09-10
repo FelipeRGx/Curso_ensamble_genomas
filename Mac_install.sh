@@ -206,9 +206,10 @@ echo -n "Instalando gdown (método 1)	  ---->	"
 
 
 brew install -y python3 python3-pip  > /dev/null 2>&1
-python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade pip > /dev/null 2>&1
 (sudo pip3 install gdown > /dev/null 2>&1) & spinner
 (sudo pip install gdown --break-system-packages> /dev/null 2>&1) & spinner
+python3 -m venv myenv
 
 python3 -m venv myenv
 source myenv/bin/activate
