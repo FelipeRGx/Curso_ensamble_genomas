@@ -195,7 +195,23 @@ sudo apt install -y python3 python3-pip /dev/null 2>&1
 
 check_success "gdown (método 1)"
 
+if ! command -v gdown &> /dev/null; then
+  echo -n "Intentando instalar gdown desde archivo tar.gz ----> "
+  wget https://files.pythonhosted.org/packages/09/6a/37e6b70c5bda3161e40265861e63b64a86bfc6ca6a8f1c35328a675c84fd/gdown-5.2.0.tar.gz -O gdown.tar.gz
+  tar -xzf gdown.tar.gz
+  cd gdown-5.2.0
+  (pip3 install . > /dev/null 2>&1) & spinner
+  cd ..
+  rm -rf gdown-5.2.0 gdown.tar.gz
+  check_success "gdown (método alternativo)"
+fi
 
+# Verificar si gdown está disponible después de ambos métodos
+if command -v gdown &> /dev/null; then
+  echo "gdown se instaló correctamente."
+else
+  echo "Error: NO SE PUDO INSTALAR gdown."
+fi
 
 # ----------------------------------------------
 # Descarga de archivos desde Google Drive usando gdown
