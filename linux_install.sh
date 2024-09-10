@@ -12,6 +12,21 @@ DATA_DIR=~/Curso_ensamble_genomas/data
 total_programas=14
 programas_instalados=0
 
+
+sed -i '/alias fastqc=/d' ~/.bashrc
+sed -i '/alias trimmomatic=/d' ~/.bashrc
+sed -i '/alias bwa=/d' ~/.bashrc
+sed -i '/alias samtools=/d' ~/.bashrc
+sed -i '/alias spades=/d' ~/.bashrc
+sed -i '/alias pilon=/d' ~/.bashrc
+sed -i '/alias prokka=/d' ~/.bashrc
+sed -i '/alias bcftools=/d' ~/.bashrc
+sed -i '/alias fasterq-dump=/d' ~/.bashrc
+sed -i '/alias gatk=/d' ~/.bashrc
+sed -i '/alias quast=/d' ~/.bashrc
+source ~/.bashrc
+
+
 # Spinner de carga
 spinner() {
     local pid=$!
@@ -192,6 +207,8 @@ sudo tar -xvzf $DATA_DIR/fastq.zip -C $DATA_DIR
 # ----------------------------------------------
 # Resumen de la instalación
 # ----------------------------------------------
+source ~/.bashrc
+
 echo "Instalación completada: $programas_instalados/$total_programas programas instalados correctamente."
 
 cd
