@@ -12,18 +12,17 @@ DATA_DIR=~/Curso_ensamble_genomas/data
 total_programas=14
 programas_instalados=0
 
-
-sed -i '/alias fastqc=/d' ~/.bashrc
-sed -i '/alias trimmomatic=/d' ~/.bashrc
-sed -i '/alias bwa=/d' ~/.bashrc
-sed -i '/alias samtools=/d' ~/.bashrc
-sed -i '/alias spades=/d' ~/.bashrc
-sed -i '/alias pilon=/d' ~/.bashrc
-sed -i '/alias prokka=/d' ~/.bashrc
-sed -i '/alias bcftools=/d' ~/.bashrc
-sed -i '/alias fasterq-dump=/d' ~/.bashrc
-sed -i '/alias gatk=/d' ~/.bashrc
-sed -i '/alias quast=/d' ~/.bashrc
+sed -i '' '/alias fastqc=/d' ~/.bashrc
+sed -i '' '/alias trimmomatic=/d' ~/.bashrc
+sed -i '' '/alias bwa=/d' ~/.bashrc
+sed -i '' '/alias samtools=/d' ~/.bashrc
+sed -i '' '/alias spades=/d' ~/.bashrc
+sed -i '' '/alias pilon=/d' ~/.bashrc
+sed -i '' '/alias prokka=/d' ~/.bashrc
+sed -i '' '/alias bcftools=/d' ~/.bashrc
+sed -i '' '/alias fasterq-dump=/d' ~/.bashrc
+sed -i '' '/alias gatk=/d' ~/.bashrc
+sed -i '' '/alias quast=/d' ~/.bashrc
 source ~/.bashrc
 
 
