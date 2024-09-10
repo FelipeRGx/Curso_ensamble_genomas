@@ -212,7 +212,7 @@ if ! command -v gdown &> /dev/null; then
   cd gdown-5.2.0
   (pip3 install . > /dev/null 2>&1) & spinner
   cd ..
-  rm -rf gdown-5.2.0 gdown.tar.gz
+  #rm -rf gdown-5.2.0 gdown.tar.gz
   check_success "gdown (método alternativo)"
 fi
 
