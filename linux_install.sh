@@ -201,10 +201,11 @@ sudo apt install -y python3 python3-pip > /dev/null 2>&1
 python3 -m pip install --upgrade pip > /dev/null 2>&1
 (pip3 install gdown > /dev/null 2>&1)  & spinner
 
-python3 -m venv myenv
-source myenv/bin/activate
-pip install --upgrade pip
-pip3 install gdown
+
+python3 -m venv myenv > /dev/null 2>&1
+source myenv/bin/activate > /dev/null 2>&1
+pip install --upgrade pip > /dev/null 2>&1
+pip3 install gdown > /dev/null 2>&1
 
 if command -v gdown &> /dev/null; then
   echo "gdown se instaló correctamente."
