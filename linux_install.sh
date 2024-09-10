@@ -1,16 +1,17 @@
 #!/bin/bash
 
-if [ -d "~/Curso_ensamble_genomas" ]; then
-  sudo rm -rf ~/Curso_ensamble_genomas
+if [ -d "$HOME/Curso_ensamble_genomas" ]; then
+  echo "Eliminando la carpeta Curso_ensamble_genomas..."
+  rm -rf "$HOME/Curso_ensamble_genomas"
 fi
 
-# Crear la carpeta 'programas' y 'data' en el directorio actual
-mkdir -p ~/Curso_ensamble_genomas/programas
-mkdir -p ~/Curso_ensamble_genomas/data
+# Crear de nuevo las carpetas
+mkdir -p "$HOME/Curso_ensamble_genomas/programas"
+mkdir -p "$HOME/Curso_ensamble_genomas/data"
 
 # Definir variable BASE_DIR para la ruta de instalación
-BASE_DIR=~/Curso_ensamble_genomas/programas
-DATA_DIR=~/Curso_ensamble_genomas/data
+BASE_DIR=$HOME/Curso_ensamble_genomas/programas
+DATA_DIR=$HOME/Curso_ensamble_genomas/data
 
 # Contador para el éxito de instalaciones
 total_programas=14
