@@ -26,6 +26,7 @@ sed -i '/alias gatk=/d' ~/.bashrc
 sed -i '/alias quast=/d' ~/.bashrc
 source ~/.bashrc
 
+echo "VERSION 5##%%%"
 
 # Spinner de carga
 spinner() {
