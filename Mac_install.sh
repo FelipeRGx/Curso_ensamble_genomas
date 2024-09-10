@@ -183,8 +183,8 @@ check_success "gdown"
 # Descarga de archivos desde Google Drive usando gdown
 # ----------------------------------------------
 echo "Descargando archivos desde Google Drive en ~/data	  ---->	"
-gdown --id 1aZ6iKs-Z7HymPiVQ2t1xf-_ajj4CK-03 -O $DATA_DIR/fastq.zip
-gdown --id 151PeMSeGnQJstXOvMOn8ArbbG49JIXes -O $DATA_DIR/reference.fasta
+gdown 1aZ6iKs-Z7HymPiVQ2t1xf-_ajj4CK-03 -O $DATA_DIR/fastq.zip
+gdown 151PeMSeGnQJstXOvMOn8ArbbG49JIXes -O $DATA_DIR/reference.fasta
 
 # ----------------------------------------------
 # Descomprimir el archivo ZIP
