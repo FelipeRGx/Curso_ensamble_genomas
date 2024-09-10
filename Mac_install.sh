@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Crear la carpeta 'programas' y 'data' en el directorio actual
-mkdir -p ~/programas
-mkdir -p ~/data
+mkdir -p ~Curso_ensamble_genomas/programas
+mkdir -p ~Curso_ensamble_genomas/data
 
 # Definir variable BASE_DIR para la ruta de instalación
-BASE_DIR=~/programas
-DATA_DIR=~/data
+BASE_DIR=~Curso_ensamble_genomas/programas
+DATA_DIR=~Curso_ensamble_genomas/data
 
 # Contador para el éxito de instalaciones
 total_programas=13
