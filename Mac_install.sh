@@ -208,4 +208,4 @@ echo "Descomprimiendo archivo ZIP	  ---->	"
 tar -xvzf $DATA_DIR/fastq.zip -C $DATA_DIR
 
 # Cargar el archivo .zshrc para aplicar los alias
-source ~/.zsh
+source ~/.zshrc
