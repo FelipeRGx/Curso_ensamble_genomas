@@ -1,19 +1,18 @@
 #!/bin/bash
 
-# Crear la carpeta 'programas' y 'data' en el directorio actual
-cd
-mkdir -p ./Curso_ensamble_genomas/programas
-mkdir -p ./Curso_ensamble_genomas/data
+# Crear la carpeta 'programas' y 'data' en el directorio actual del usuario
+mkdir -p $HOME/Curso_ensamble_genomas/programas
+mkdir -p $HOME/Curso_ensamble_genomas/data
 
 # Definir variable BASE_DIR para la ruta de instalación
-BASE_DIR=./Curso_ensamble_genomas/programas
-DATA_DIR=./Curso_ensamble_genomas/data
+BASE_DIR=$HOME/Curso_ensamble_genomas/programas
+DATA_DIR=$HOME/Curso_ensamble_genomas/data
 
 # Contador para el éxito de instalaciones
 total_programas=14
 programas_instalados=0
 
-# Eliminar los alias anteriores del .zshrc en lugar de .bashrc
+# Eliminar los alias anteriores del .zshrc
 sed -i '' '/alias fastqc=/d' ~/.zshrc
 sed -i '' '/alias trimmomatic=/d' ~/.zshrc
 sed -i '' '/alias bwa=/d' ~/.zshrc
@@ -97,7 +96,6 @@ echo 'alias fastqc="/usr/local/bin/fastqc"' >> ~/.zshrc
 echo -n "Instalando Trimmomatic	  ---->	"
 (brew install trimmomatic > /dev/null 2>&1) & spinner
 check_success "Trimmomatic"
-#echo 'alias trimmomatic="java -jar /usr/local/opt/trimmomatic/trimmomatic.jar"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de BWA
@@ -185,8 +183,6 @@ python3 setup.py install > /dev/null 2>&1
 echo 'alias quast="'$BASE_DIR'/quast/quast.py"' >> ~/.zshrc
 check_success "QUAST"
 
-cd
-
 # ----------------------------------------------
 # Instalación de gdown para descargas grandes desde Google Drive
 # ----------------------------------------------
@@ -210,4 +206,6 @@ tar -xvzf $DATA_DIR/fastq.zip -C $DATA_DIR
 
 # Cargar el archivo .zshrc para aplicar los alias
 source ~/.zshrc
-cd
+
+# Resumen
+echo "Instalación completada: $programas_instalados/$total_programas programas instalados correctamente."
