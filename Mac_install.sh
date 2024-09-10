@@ -173,7 +173,7 @@ echo 'alias gatk="'$BASE_DIR'/gatk-4.2.5.0/gatk"' >> ~/.zshrc
 # Instalación de QUAST desde GitHub (con corrección)
 # ----------------------------------------------
 echo "Instalando QUAST	  ---->	"
-(git clone https://github.com/ablab/quast.git $BASE_DIR/quast > /dev/null 2>&1) & spinner
+(sudo git clone https://github.com/ablab/quast.git $BASE_DIR/quast > /dev/null 2>&1) & spinner
 
 # Cambiar permisos del directorio para evitar problemas
 chmod -R 755 $BASE_DIR
