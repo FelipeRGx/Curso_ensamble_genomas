@@ -195,6 +195,7 @@ check_success "gdown\n\n\n"
 # Descarga de archivos desde Google Drive usando gdown
 # ----------------------------------------------
 echo "Descargando archivos desde Google Drive en ~/data	  ---->	"
+sudo apt-get install python3-pip
 gdown  1aZ6iKs-Z7HymPiVQ2t1xf-_ajj4CK-03 -O $DATA_DIR/fastq.zip
 gdown  151PeMSeGnQJstXOvMOn8ArbbG49JIXes -O $DATA_DIR/reference.fasta
 
