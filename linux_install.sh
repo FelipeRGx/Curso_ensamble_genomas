@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Crear la carpeta 'programas' y 'data' en el directorio actual
-mkdir -p ~/programas
-mkdir -p ~/data
+mkdir -p ~bioinfo/programas
+mkdir -p ~bioinfo/data
 
 # Definir variable BASE_DIR para la ruta de instalación
-BASE_DIR=~/programas
-DATA_DIR=~/data
+BASE_DIR=~bioinfo/programas
+DATA_DIR=~bioinfo/data
 
 # Contador para el éxito de instalaciones
 total_programas=13
@@ -145,7 +145,8 @@ echo 'alias gatk="'$BASE_DIR'/gatk-4.2.5.0/gatk"' >> ~/.bashrc
 # Instalación de QUAST desde GitHub (con corrección)
 # ----------------------------------------------
 echo "Instalando QUAST	  ---->	"
-git clone https://github.com/ablab/quast.git $BASE_DIR/quast > /dev/null 2>&1
+(git clone https://github.com/ablab/quast.git $BASE_DIR/quast > /dev/null 2>&1) & spinner
+
 
 # Corrección en jsontemplate.py (cgi.escape -> html.escape)
 #echo "Corrigiendo jsontemplate.py	  ---->	"
@@ -161,9 +162,11 @@ python3 setup.py install > /dev/null 2>&1
 # Verificación de instalación
 #echo "Verificando instalación de QUAST	  ---->	"
 
-echo "QUAST instalado y corregido correctamente."
 echo 'alias quast="'$BASE_DIR'/quast/quast.py"' >> ~/.bashrc
 ((programas_instalados++))
+check_success "QUAST"
+
+cd
 
 
 # ----------------------------------------------
@@ -171,13 +174,13 @@ echo 'alias quast="'$BASE_DIR'/quast/quast.py"' >> ~/.bashrc
 # ----------------------------------------------
 echo -n "Instalando gdown	  ---->	"
 (sudo pip3 install gdown > /dev/null 2>&1) & spinner
-check_success "gdown"
+check_success "gdown\n\n\n"
 
 # ----------------------------------------------
 # Descarga de archivos desde Google Drive usando gdown
 # ----------------------------------------------
 echo "Descargando archivos desde Google Drive en ~/data	  ---->	"
-gdown --id 1aZ6iKs-Z7HymPiVQ2t1xf-_ajj4CK-03 -O $DATA_DIR/archivo1.zip
+gdown --id 1aZ6iKs-Z7HymPiVQ2t1xf-_ajj4CK-03 -O $DATA_DIR/fastq.zip
 gdown --id 151PeMSeGnQJstXOvMOn8ArbbG49JIXes -O $DATA_DIR/reference.fasta
 
 # ----------------------------------------------
@@ -190,3 +193,5 @@ unzip $DATA_DIR/archivo1.zip -d $DATA_DIR
 # Resumen de la instalación
 # ----------------------------------------------
 echo "Instalación completada: $programas_instalados/$total_programas programas instalados correctamente."
+
+cd
