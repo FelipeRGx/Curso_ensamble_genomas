@@ -190,6 +190,7 @@ cd
 # Instalación de gdown para descargas grandes desde Google Drive
 # ----------------------------------------------
 echo -n "Instalando gdown	  ---->	"
+sudo apt-get install python3-pip -y
 (pip3 install gdown > /dev/null 2>&1) & spinner
 check_success "gdown"
 
