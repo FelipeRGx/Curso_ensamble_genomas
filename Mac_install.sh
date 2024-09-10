@@ -9,7 +9,7 @@ BASE_DIR=~Curso_ensamble_genomas/programas
 DATA_DIR=~Curso_ensamble_genomas/data
 
 # Contador para el éxito de instalaciones
-total_programas=13
+total_programas=14
 programas_instalados=0
 
 # Spinner de carga
