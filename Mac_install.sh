@@ -194,6 +194,7 @@ echo -n "Instalando gdown	  ---->	"
 echo -n "Instalando gdown (método 1)	  ---->	"
 brew install -y python3 python3-pip  > /dev/null 2>&1
 (pip3 install gdown > /dev/null 2>&1) & spinner
+(pip install gdown --break-system-packages> /dev/null 2>&1) & spinner
 
 check_success "gdown"
 
