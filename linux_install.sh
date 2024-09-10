@@ -2,7 +2,7 @@
 
 if [ -d "$HOME/Curso_ensamble_genomas" ]; then
   echo "Eliminando la carpeta Curso_ensamble_genomas..."
-  rm -rf "$HOME/Curso_ensamble_genomas"
+  sudo rm -rf "$HOME/Curso_ensamble_genomas"
 fi
 
 # Crear de nuevo las carpetas
