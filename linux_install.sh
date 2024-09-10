@@ -166,7 +166,7 @@ echo 'alias gatk="'$BASE_DIR'/gatk-4.2.5.0/gatk"' >> ~/.bashrc
 # Instalación de QUAST desde GitHub (con corrección)
 # ----------------------------------------------
 echo "Instalando QUAST	  ---->	"
-(git clone https://github.com/ablab/quast.git $BASE_DIR/quast > /dev/null 2>&1) & spinner
+(sudo git clone https://github.com/ablab/quast.git $BASE_DIR/quast > /dev/null 2>&1) & spinner
 
 
 # Corrección en jsontemplate.py (cgi.escape -> html.escape)
