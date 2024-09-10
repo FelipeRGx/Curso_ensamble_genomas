@@ -191,25 +191,6 @@ echo -n "Instalando gdown	  ---->	"
 echo -n "Instalando gdown (método 1)	  ---->	"
 brew install python3
 (pip3 install gdown > /dev/null 2>&1) & spinner
-check_success "gdown (método 1)"
-
-# Si el primer método falla, intenta instalar desde el archivo tar.gz
-if ! command -v gdown &> /dev/null; then
-  echo -n "Intentando instalar gdown desde archivo tar.gz ----> "
-  wget https://files.pythonhosted.org/packages/source/g/gdown/gdown-X.Y.Z.tar.gz -O gdown.tar.gz
-  tar -xzf gdown.tar.gz
-  cd gdown-X.Y.Z
-  (pip3 install . > /dev/null 2>&1) & spinner
-  cd ..
-  rm -rf gdown-X.Y.Z gdown.tar.gz
-  check_success "gdown (método alternativo)"
-fi
-
-if command -v gdown &> /dev/null; then
-  echo "gdown se instaló correctamente."
-else
-  echo "Error: Ningún método pudo instalar gdown."
-fi
 
 check_success "gdown"
 
