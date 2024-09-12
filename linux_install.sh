@@ -121,11 +121,13 @@ sudo chmod +x /usr/bin/pilon
 # Instalación de Prokka
 # ----------------------------------------------
 echo -n "Instalando Prokka	  ---->	"
+sudo apt-get install debconf-utils > /dev/null 2>&1
+
 export DEBIAN_FRONTEND=noninteractive
 (sudo apt-get install -y prokka > /dev/null 2>&1) & spinner
 check_success "Prokka"
-sudo chmod +x /usr/bin/prokka
 unset DEBIAN_FRONTEND
+
 
 # ----------------------------------------------
 # Instalación de BCFtools
@@ -133,7 +135,6 @@ unset DEBIAN_FRONTEND
 echo -n "Instalando BCFtools	  ---->	"
 (sudo apt-get install -y bcftools > /dev/null 2>&1) & spinner
 check_success "BCFtools"
-sudo chmod +x /usr/bin/bcftools
 
 # ----------------------------------------------
 # Instalación de SRA-Toolkit
@@ -145,69 +146,180 @@ check_success "SRA-Toolkit"
 # ----------------------------------------------
 # Instalación de GATK (descarga con wget)
 # ----------------------------------------------
-echo -n "Instalando GATK		  ---->	"
-(wget https://github.com/broadinstitute/gatk/releases/download/4.2.5.0/gatk-4.2.5.0.zip -P $BASE_DIR > /dev/null 2>&1 && unzip $BASE_DIR/gatk-4.2.5.0.zip -d $BASE_DIR > /dev/null 2>&1 && rm $BASE_DIR/gatk-4.2.5.0.zip) & spinner
-check_success "GATK"
-sudo chmod +x $BASE_DIR/gatk-4.2.5.0/gatk
-echo 'alias gatk="'$BASE_DIR'/gatk-4.2.5.0/gatk"' >> ~/.bashrc
-
-# ----------------------------------------------
-# Instalación de QUAST desde GitHub (con corrección)
-# ----------------------------------------------
 echo "Instalando QUAST	  ---->	"
-(sudo git clone https://github.com/ablab/quast.git $BASE_DIR/quast > /dev/null 2>&1) & spinner
+
+# Número máximo de reintentos
+check_status_file() {
+    local dir=$1
+    if [ -f "$dir/.status" ] && grep -q "true" "$dir/.status"; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Función para marcar éxito en .status
+mark_status_success() {
+    local dir=$1
+    echo "true" > "$dir/.status"
+}
+
+# Función para eliminar directorio si falla la instalación
+delete_directory_if_failed() {
+    local dir=$1
+    if [ -d "$dir" ]; then
+        echo "Eliminando la carpeta $dir debido a un error..."
+        sudo rm -rf "$dir"
+    fi
+}
+
+########################################
+# Instalación de QUAST
+########################################
+QUAST_DIR="$BASE_DIR/quast"
+echo "Verificando QUAST..."
+
+if check_status_file $QUAST_DIR; then
+    echo "QUAST ya está instalado correctamente."
+else
+    echo "Instalando QUAST..."
+    (sudo apt-get update > /dev/null 2>&1) & spinner
+    (sudo apt-get install -y pkg-config libfreetype6-dev libpng-dev python3-matplotlib > /dev/null 2>&1) & spinner
 
 
-# Corrección en jsontemplate.py (cgi.escape -> html.escape)
-#echo "Corrigiendo jsontemplate.py	  ---->	"
-sudo sed -i 's/cgi.escape/html.escape/g' $BASE_DIR/quast/quast_libs/site_packages/jsontemplate/jsontemplate.py
-sudo sed -i '1i import html' $BASE_DIR/quast/quast_libs/site_packages/jsontemplate/jsontemplate.py
 
-# Instalación de dependencias y permisos
-cd $BASE_DIR/quast
-pip3 install -r requirements.txt > /dev/null 2>&1
-sudo chmod +x quast.py
-python3 setup.py install > /dev/null 2>&1
+    # Número máximo de reintentos
+    max_retries=3
+    retry_count=0
+    success=false
 
-# Verificación de instalación
-#echo "Verificando instalación de QUAST	  ---->	"
+    # Intentar descargar QUAST hasta el máximo número de intentos
+    while [ $retry_count -lt $max_retries ]; do
+        echo "Descargando QUAST desde https://github.com/ablab/quast.git..."
+        if sudo git clone --progress https://github.com/ablab/quast.git $QUAST_DIR 2>&1 | tee >(grep "Compressing objects\|Receiving objects"); then
+            # Aplicar permisos a toda la carpeta
+            sudo chmod -R 755 $QUAST_DIR
+            success=true
+            break
+        else
+            retry_count=$((retry_count+1))
+            sleep 5 # Esperar 5 segundos antes de reintentar
+        fi
+    done
 
-echo 'alias quast="'$BASE_DIR'/quast/quast.py"' >> ~/.bashrc
-((programas_instalados++))
-check_success "QUAST"
+    if [ "$success" = true ]; then
+        echo "Descarga de QUAST exitosa."
 
-cd
+        # Verificar si el archivo requirements.txt existe
+        
+        # Corrección en jsontemplate.py (cgi.escape -> html.escape)
+        sudo sed -i 's/cgi.escape/html.escape/g' $QUAST_DIR/quast_libs/site_packages/jsontemplate/jsontemplate.py > /dev/null 2>&1
+        sudo sed -i '1i import html' $QUAST_DIR/quast_libs/site_packages/jsontemplate/jsontemplate.py > /dev/null 2>&1
+
+        # Instalación de dependencias y permisos
+        cd $QUAST_DIR
+        #pip3 install -r requirements.txt > /dev/null 2>&1
+        sudo chmod +x quast.py > /dev/null 2>&1
+        sudo python3 ./setup.py install > /dev/null 2>&1
+
+        # Añadir alias para QUAST
+        echo 'alias quast="'$QUAST_DIR'/quast.py"' >> ~/.bashrc
+
+        # Marcar como éxito
+        mark_status_success $QUAST_DIR
+        echo "QUAST instalado correctamente."
+    else
+        echo -e "\e[31mError en tu conexión. Inténtalo más tarde.\e[0m"
+        delete_directory_if_failed $QUAST_DIR
+        exit 1
+    fi
+fi
+
+########################################
+# Instalación de GATK
+########################################
+GATK_DIR="$BASE_DIR/gatk-4.2.5.0"
+echo "Verificando GATK..."
+
+if check_status_file $GATK_DIR; then
+    echo "GATK ya está instalado correctamente."
+else
+    echo "Instalando GATK..."
+
+    # Restablecer los contadores para GATK
+    retry_count=0
+    success=false
+
+    # Intentar descargar GATK hasta el máximo número de intentos
+    while [ $retry_count -lt $max_retries ]; do
+        echo "Descargando GATK..."
+        if wget --progress=dot:giga https://github.com/broadinstitute/gatk/releases/download/4.2.5.0/gatk-4.2.5.0.zip -P $BASE_DIR 2>&1 | grep -o -E "([0-9]+%)"; then
+            success=true
+            break
+        else
+            retry_count=$((retry_count+1))
+            sleep 5 # Esperar 5 segundos antes de reintentar
+        fi
+    done
+
+    if [ "$success" = true ]; then
+        # Descomprimir el archivo descargado
+        unzip $BASE_DIR/gatk-4.2.5.0.zip -d $BASE_DIR > /dev/null 2>&1
+
+        # Verificar si el archivo gatk existe
+        if [ ! -f "$GATK_DIR/gatk" ]; then
+            echo "Error: No se encuentra el archivo ejecutable gatk"
+            delete_directory_if_failed $GATK_DIR
+            exit 1
+        fi
+
+        # Eliminar el archivo zip después de la descompresión
+        rm $BASE_DIR/gatk-4.2.5.0.zip > /dev/null 2>&1
+
+        # Asignar permisos de ejecución
+        sudo chmod -R 755 $GATK_DIR > /dev/null 2>&1
+
+        # Añadir alias para GATK
+        echo 'alias gatk="'$GATK_DIR'/gatk"' >> ~/.bashrc
+
+        # Marcar como éxito
+        mark_status_success $GATK_DIR
+        echo "GATK instalado correctamente."
+    else
+        echo -e "\e[31mError en tu conexión. Inténtalo más tarde.\e[0m"
+        delete_directory_if_failed $GATK_DIR
+        exit 1
+    fi
+fi
 
 
 # ----------------------------------------------
 # Instalación de gdown para descargas grandes desde Google Drive
 # ----------------------------------------------
-echo -n "Instalando gdown (método 1)	  ---->	"
-
+echo -n "Instalando dependencias	  ---->	"
 sudo apt-get update -y > /dev/null 2>&1
-
 sudo apt install -y python3 python3-pip > /dev/null 2>&1
 python3 -m pip install --upgrade pip > /dev/null 2>&1
-(pip3 install gdown > /dev/null 2>&1)  & spinner
+echo "Dependencias instaladas correctamente."
 
+# ----------------------------------------------
+# Descarga de archivos desde Dropbox
+# ----------------------------------------------
+echo "Descargando archivos desde Dropbox en ~/data	  ---->	"
 
-python3 -m venv myenv > /dev/null 2>&1
-source myenv/bin/activate > /dev/null 2>&1
-pip install --upgrade pip > /dev/null 2>&1
-pip3 install gdown > /dev/null 2>&1
+# Descargar fastq.zip
+wget -O $DATA_DIR/fastq.zip "https://www.dropbox.com/scl/fi/07yop16imcdkdgtfqmabf/fastq.zip?rlkey=m65e9u15w4d640hbnm1ci6xgv&st=afk913km&dl=1"
 
-if command -v gdown &> /dev/null; then
-  echo "gdown se instaló correctamente."
+# Descargar reference.fasta
+wget -O $DATA_DIR/reference.fasta "https://www.dropbox.com/scl/fi/gvq2qvamu0iegjkgemy54/reference.fasta?rlkey=4b3d4exwea2tgrlhyu6n61zd7&st=rcjv34gr&dl=1"
+
+# Verificar si los archivos se descargaron correctamente
+if [[ -f "$DATA_DIR/fastq.zip" && -f "$DATA_DIR/reference.fasta" ]]; then
+    echo "Archivos descargados correctamente desde Dropbox."
 else
-  echo "Error: NO SE PUDO INSTALAR gdown."
+    echo -e "\e[31mError en la descarga de los archivos desde Dropbox.\e[0m"
+    exit 1
 fi
-
-# ----------------------------------------------
-# Descarga de archivos desde Google Drive usando gdown
-# ----------------------------------------------
-echo "Descargando archivos desde Google Drive en ~/data	  ---->	"
-gdown  1aZ6iKs-Z7HymPiVQ2t1xf-_ajj4CK-03 -O $DATA_DIR/fastq.zip
-gdown  151PeMSeGnQJstXOvMOn8ArbbG49JIXes -O $DATA_DIR/reference.fasta
 
 # ----------------------------------------------
 # Descomprimir el archivo ZIP
@@ -215,11 +327,10 @@ gdown  151PeMSeGnQJstXOvMOn8ArbbG49JIXes -O $DATA_DIR/reference.fasta
 echo "Descomprimiendo archivo ZIP	  ---->	"
 sudo tar -xvzf $DATA_DIR/fastq.zip -C $DATA_DIR
 
-# ----------------------------------------------
-# Resumen de la instalación
-# ----------------------------------------------
-source ~/.bashrc
-
-echo "Instalación completada: $programas_instalados/$total_programas programas instalados correctamente."
-
-cd
+# Verificar si la descompresión fue exitosa
+if [ $? -eq 0 ]; then
+    echo "Archivo ZIP descomprimido correctamente."
+else
+    echo -e "\e[31mError al descomprimir el archivo ZIP.\e[0m"
+    exit 1
+fi
