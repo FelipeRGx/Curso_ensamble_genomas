@@ -141,42 +141,31 @@ echo -n "Instalando SRA-Toolkit	  ---->	"
 (brew install sratoolkit > /dev/null 2>&1) & spinner
 check_success "SRA-Toolkit"
 
-check_status_file() {
-    local dir=$1
-    if [ -f "$dir/.status" ] && grep -q "true" "$dir/.status"; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-# Función para eliminar directorio si no existe el archivo .status
-delete_if_no_status() {
-    local dir=$1
-    if [ -d "$dir" ] && [ ! -f "$dir/.status" ]; then
-        echo "Eliminando la carpeta $dir porque no tiene un archivo .status."
-        rm -rf "$dir"
-    fi
-}
-
-# Función para marcar éxito en .status
 mark_status_success() {
     local dir=$1
     echo "true" | sudo tee "$dir/.status" > /dev/null
 }
 
+# Función para eliminar directorio si no existe el archivo .status (macOS)
+delete_if_no_status() {
+    local dir=$1
+    if [ -d "$dir" ] && [ ! -f "$dir/.status" ]; then
+        echo "Eliminando la carpeta $dir porque no tiene un archivo .status."
+        sudo rm -rf "$dir" > /dev/null 2>&1
+    fi
+}
 
-# Función para eliminar directorio si falla la instalación
+# Función para eliminar directorio si falla la instalación (macOS)
 delete_directory_if_failed() {
     local dir=$1
     if [ -d "$dir" ]; then
         echo "Eliminando la carpeta $dir debido a un error..."
-        rm -rf "$dir"
+        sudo rm -rf "$dir" > /dev/null 2>&1
     fi
 }
 
 ########################################
-# Instalación de QUAST
+# Instalación de QUAST (macOS)
 ########################################
 QUAST_DIR="$BASE_DIR/quast"
 echo "Verificando QUAST..."
@@ -192,7 +181,7 @@ else
     (brew install pkg-config freetype libpng python-matplotlib > /dev/null 2>&1) & spinner
 
     # Número máximo de reintentos
-    max_retries=5
+    max_retries=3
     retry_count=0
     success=false
 
@@ -201,7 +190,7 @@ else
         echo "Descargando QUAST desde https://github.com/ablab/quast.git..."
         if git clone --progress https://github.com/ablab/quast.git $QUAST_DIR 2>&1 | tee >(grep "Compressing objects\|Receiving objects"); then
             # Aplicar permisos a toda la carpeta
-            chmod -R 755 $QUAST_DIR
+            sudo chmod -R 755 $QUAST_DIR
             success=true
             break
         else
@@ -213,16 +202,16 @@ else
     if [ "$success" = true ]; then
         echo "Descarga de QUAST exitosa."
 
-        # Verificar si el archivo requirements.txt existe y corregir jsontemplate.py
+        # Verificar si el archivo jsontemplate.py existe y hacer corrección
         if [ -f "$QUAST_DIR/quast_libs/site_packages/jsontemplate/jsontemplate.py" ]; then
-            sed -i '' 's/cgi.escape/html.escape/g' $QUAST_DIR/quast_libs/site_packages/jsontemplate/jsontemplate.py > /dev/null 2>&1
-            sed -i '' '1i import html' $QUAST_DIR/quast_libs/site_packages/jsontemplate/jsontemplate.py > /dev/null 2>&1
+            sudo sed -i '' 's/cgi.escape/html.escape/g' $QUAST_DIR/quast_libs/site_packages/jsontemplate/jsontemplate.py > /dev/null 2>&1
+            sudo sed -i '' '1i import html' $QUAST_DIR/quast_libs/site_packages/jsontemplate/jsontemplate.py > /dev/null 2>&1
         fi
 
         # Instalación de dependencias y permisos
         cd $QUAST_DIR
-        chmod +x quast.py
-        python3 ./setup.py install > /dev/null 2>&1
+        sudo chmod +x quast.py
+        sudo python3 ./setup.py install > /dev/null 2>&1
 
         # Añadir alias para QUAST en el shell de macOS
         echo 'alias quast="'$QUAST_DIR'/quast.py"' >> ~/.zshrc
@@ -239,7 +228,7 @@ else
 fi
 
 ########################################
-# Instalación de GATK
+# Instalación de GATK (macOS)
 ########################################
 GATK_DIR="$BASE_DIR/gatk-4.2.5.0"
 echo "Verificando GATK..."
@@ -283,7 +272,7 @@ else
         rm $BASE_DIR/gatk-4.2.5.0.zip > /dev/null 2>&1
 
         # Asignar permisos de ejecución
-        chmod -R 755 $GATK_DIR > /dev/null 2>&1
+        sudo chmod -R 755 $GATK_DIR > /dev/null 2>&1
 
         # Añadir alias para GATK en el shell de macOS
         echo 'alias gatk="'$GATK_DIR'/gatk"' >> ~/.zshrc
