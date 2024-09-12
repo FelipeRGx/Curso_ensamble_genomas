@@ -6,6 +6,13 @@
 mkdir -p "$HOME/Curso_ensamble_genomas/programas"
 mkdir -p "$HOME/Curso_ensamble_genomas/data"
 
+if [ ! -e /usr/bin/python ]; then
+    echo "Creando enlace simbólico para python3 como python"
+    sudo ln -s /usr/bin/python3 /usr/bin/python
+else
+    echo "El enlace simbólico para python ya existe."
+fi
+
 # Definir variable BASE_DIR para la ruta de instalación
 BASE_DIR=$HOME/Curso_ensamble_genomas/programas
 DATA_DIR=$HOME/Curso_ensamble_genomas/data
