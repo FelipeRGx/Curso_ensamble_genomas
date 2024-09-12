@@ -162,7 +162,7 @@ delete_if_no_status() {
 # Función para marcar éxito en .status
 mark_status_success() {
     local dir=$1
-    echo "true" | sudo tee "$dir/.status" > /dev/null
+    sudo touch "$dir/.status" > /dev/null
 }
 
 # Función para eliminar directorio si falla la instalación
@@ -198,6 +198,10 @@ else
     # Intentar descargar QUAST hasta el máximo número de intentos
     while [ $retry_count -lt $max_retries ]; do
         echo "Descargando QUAST desde https://github.com/ablab/quast.git..."
+        
+        # Verificar si la carpeta sigue existiendo sin archivo .status y eliminarla
+        delete_if_no_status $QUAST_DIR
+        
         if git clone --progress https://github.com/ablab/quast.git $QUAST_DIR 2>&1 | tee >(grep "Compressing objects\|Receiving objects"); then
             # Aplicar permisos a toda la carpeta
             sudo chmod -R 755 $QUAST_DIR
