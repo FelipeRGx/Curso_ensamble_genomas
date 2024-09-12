@@ -6,12 +6,6 @@
 mkdir -p "$HOME/Curso_ensamble_genomas/programas"
 mkdir -p "$HOME/Curso_ensamble_genomas/data"
 
-if [ ! -e /usr/bin/python ]; then
-    echo "Creando enlace simbólico para python3 como python"
-    sudo ln -s /usr/bin/python3 /usr/bin/python
-else
-    echo "El enlace simbólico para python ya existe."
-fi
 
 # Definir variable BASE_DIR para la ruta de instalación
 BASE_DIR=$HOME/Curso_ensamble_genomas/programas
@@ -316,6 +310,16 @@ echo -n "Instalando dependencias	  ---->	"
 sudo apt-get update -y > /dev/null 2>&1
 sudo apt install -y python3 python3-pip > /dev/null 2>&1
 python3 -m pip install --upgrade pip > /dev/null 2>&1
+
+if [ ! -e /usr/bin/python ]; then
+    echo "Creando enlace simbólico para python3 como python"
+    sudo ln -s /usr/bin/python3 /usr/bin/python
+else
+    echo "El enlace simbólico para python ya existe."
+fi
+
+
+
 echo "Dependencias instaladas correctamente."
 
 # ----------------------------------------------
