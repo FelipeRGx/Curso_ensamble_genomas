@@ -75,7 +75,6 @@ echo -n "Instalando FastQC	  ---->	"
 (sudo apt-get install -y fastqc > /dev/null 2>&1) & spinner
 check_success "FastQC"
 sudo chmod +x /usr/bin/fastqc
-echo 'alias fastqc="/usr/bin/fastqc"' >> ~/.bashrc
 
 # ----------------------------------------------
 # Instalación de Trimmomatic (descarga con wget)
@@ -93,7 +92,6 @@ echo -n "Instalando BWA		  ---->	"
 (sudo apt-get install -y bwa > /dev/null 2>&1) & spinner
 check_success "BWA"
 sudo chmod +x /usr/bin/bwa
-echo 'alias bwa="/usr/bin/bwa"' >> ~/.bashrc
 
 # ----------------------------------------------
 # Instalación de Samtools
@@ -102,7 +100,6 @@ echo -n "Instalando Samtools	  ---->	"
 (sudo apt-get install -y samtools > /dev/null 2>&1) & spinner
 check_success "Samtools"
 sudo chmod +x /usr/bin/samtools
-echo 'alias samtools="/usr/bin/samtools"' >> ~/.bashrc
 
 # ----------------------------------------------
 # Instalación de SPAdes
@@ -111,7 +108,6 @@ echo -n "Instalando SPAdes	  ---->	"
 (sudo apt-get install -y spades > /dev/null 2>&1) & spinner
 check_success "SPAdes"
 sudo chmod +x /usr/bin/spades.py
-echo 'alias spades="/usr/bin/spades.py"' >> ~/.bashrc
 
 # ----------------------------------------------
 # Instalación de Pilon
@@ -120,7 +116,6 @@ echo -n "Instalando Pilon	  ---->	"
 (sudo apt-get install -y pilon > /dev/null 2>&1) & spinner
 check_success "Pilon"
 sudo chmod +x /usr/bin/pilon
-echo 'alias pilon="/usr/bin/pilon"' >> ~/.bashrc
 
 # ----------------------------------------------
 # Instalación de Prokka
@@ -130,7 +125,6 @@ export DEBIAN_FRONTEND=noninteractive
 (sudo apt-get install -y prokka > /dev/null 2>&1) & spinner
 check_success "Prokka"
 sudo chmod +x /usr/bin/prokka
-echo 'alias prokka="/usr/bin/prokka"' >> ~/.bashrc
 unset DEBIAN_FRONTEND
 
 # ----------------------------------------------
@@ -140,7 +134,6 @@ echo -n "Instalando BCFtools	  ---->	"
 (sudo apt-get install -y bcftools > /dev/null 2>&1) & spinner
 check_success "BCFtools"
 sudo chmod +x /usr/bin/bcftools
-echo 'alias bcftools="/usr/bin/bcftools"' >> ~/.bashrc
 
 # ----------------------------------------------
 # Instalación de SRA-Toolkit
@@ -148,7 +141,6 @@ echo 'alias bcftools="/usr/bin/bcftools"' >> ~/.bashrc
 echo -n "Instalando SRA-Toolkit	  ---->	"
 (sudo apt-get install -y sra-toolkit > /dev/null 2>&1) & spinner
 check_success "SRA-Toolkit"
-echo 'alias fasterq-dump="/usr/bin/fasterq-dump"' >> ~/.bashrc
 
 # ----------------------------------------------
 # Instalación de GATK (descarga con wget)
@@ -168,8 +160,8 @@ echo "Instalando QUAST	  ---->	"
 
 # Corrección en jsontemplate.py (cgi.escape -> html.escape)
 #echo "Corrigiendo jsontemplate.py	  ---->	"
-sed -i 's/cgi.escape/html.escape/g' $BASE_DIR/quast/quast_libs/site_packages/jsontemplate/jsontemplate.py
-sed -i '1i import html' $BASE_DIR/quast/quast_libs/site_packages/jsontemplate/jsontemplate.py
+sudo sed -i 's/cgi.escape/html.escape/g' $BASE_DIR/quast/quast_libs/site_packages/jsontemplate/jsontemplate.py
+sudo sed -i '1i import html' $BASE_DIR/quast/quast_libs/site_packages/jsontemplate/jsontemplate.py
 
 # Instalación de dependencias y permisos
 cd $BASE_DIR/quast
