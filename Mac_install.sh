@@ -141,12 +141,16 @@ echo -n "Instalando SRA-Toolkit	  ---->	"
 (brew install sratoolkit > /dev/null 2>&1) & spinner
 check_success "SRA-Toolkit"
 
-mark_status_success() {
+check_status_file() {
     local dir=$1
-    echo "true" | sudo tee "$dir/.status" > /dev/null
+    if [ -f "$dir/.status" ] && grep -q "true" "$dir/.status"; then
+        return 0
+    else
+        return 1
+    fi
 }
 
-# Función para eliminar directorio si no existe el archivo .status (macOS)
+# Función para eliminar directorio si no existe el archivo .status
 delete_if_no_status() {
     local dir=$1
     if [ -d "$dir" ] && [ ! -f "$dir/.status" ]; then
@@ -155,7 +159,13 @@ delete_if_no_status() {
     fi
 }
 
-# Función para eliminar directorio si falla la instalación (macOS)
+# Función para marcar éxito en .status
+mark_status_success() {
+    local dir=$1
+    echo "true" | sudo tee "$dir/.status" > /dev/null
+}
+
+# Función para eliminar directorio si falla la instalación
 delete_directory_if_failed() {
     local dir=$1
     if [ -d "$dir" ]; then
