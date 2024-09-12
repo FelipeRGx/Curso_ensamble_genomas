@@ -328,7 +328,7 @@ fi
 # Descomprimir el archivo ZIP
 # ----------------------------------------------
 echo "Descomprimiendo archivo ZIP	  ---->	"
-unzip $DATA_DIR/fastq.zip -d $DATA_DIR > /dev/null 2>&1
+sudo tar -xvzf $DATA_DIR/fastq.zip -C $DATA_DIR > /dev/null 2>&1
 
 # Verificar si la descompresión fue exitosa
 if [ $? -eq 0 ]; then
