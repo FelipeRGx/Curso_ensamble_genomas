@@ -64,6 +64,15 @@ check_success() {
     fi
 }
 
+echo "Actualizando Homebrew y el sistema..."
+if [ -d "/opt/homebrew" ]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+else
+    eval "$(/usr/local/bin/brew shellenv)"
+fi
+brew update > /dev/null 2>&1
+echo "Sistema actualizado correctamente."
+
 # ----------------------------------------------
 # Actualizar el sistema en modo silencioso
 # ----------------------------------------------
