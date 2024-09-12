@@ -236,7 +236,7 @@ else
         source ~/.bashrc  # Recargar el archivo de configuración
 
         # Marcar como éxito
-        mark_status_success $QUAST_DIR
+        sudo mark_status_success $QUAST_DIR
         echo "QUAST instalado correctamente."
     else
         echo -e "\e[31mError en tu conexión. Inténtalo más tarde.\e[0m"
