@@ -1,6 +1,5 @@
 #!/bin/bash
 
-sudo su
 
 # Crear de nuevo las carpetas
 mkdir -p "$HOME/Curso_ensamble_genomas/programas"
