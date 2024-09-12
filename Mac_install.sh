@@ -1,8 +1,4 @@
-
 #!/bin/bash
-if [ -d "$HOME/Curso_ensamble_genomas" ]; then
-  sudo rm -rf $HOME/Curso_ensamble_genomas
-fi
 
 # Crear la carpeta 'programas' y 'data' en el directorio actual del usuario
 mkdir -p $HOME/Curso_ensamble_genomas/programas
