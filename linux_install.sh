@@ -148,13 +148,22 @@ check_success "SRA-Toolkit"
 # ----------------------------------------------
 echo "Instalando QUAST	  ---->	"
 
-# Número máximo de reintentos
+# Función para verificar si el archivo .status existe
 check_status_file() {
     local dir=$1
     if [ -f "$dir/.status" ] && grep -q "true" "$dir/.status"; then
         return 0
     else
         return 1
+    fi
+}
+
+# Función para eliminar directorio si no existe el archivo .status
+delete_if_no_status() {
+    local dir=$1
+    if [ -d "$dir" ] && [ ! -f "$dir/.status" ]; then
+        echo "Eliminando la carpeta $dir porque no tiene un archivo .status."
+        sudo rm -rf "$dir"
     fi
 }
 
@@ -179,14 +188,15 @@ delete_directory_if_failed() {
 QUAST_DIR="$BASE_DIR/quast"
 echo "Verificando QUAST..."
 
+# Eliminar la carpeta si ya existe pero no tiene el archivo .status
+delete_if_no_status $QUAST_DIR
+
 if check_status_file $QUAST_DIR; then
     echo "QUAST ya está instalado correctamente."
 else
     echo "Instalando QUAST..."
     (sudo apt-get update > /dev/null 2>&1) & spinner
     (sudo apt-get install -y pkg-config libfreetype6-dev libpng-dev python3-matplotlib > /dev/null 2>&1) & spinner
-
-
 
     # Número máximo de reintentos
     max_retries=3
@@ -218,12 +228,12 @@ else
 
         # Instalación de dependencias y permisos
         cd $QUAST_DIR
-        #pip3 install -r requirements.txt > /dev/null 2>&1
         sudo chmod +x quast.py > /dev/null 2>&1
         sudo python3 ./setup.py install > /dev/null 2>&1
 
         # Añadir alias para QUAST
         echo 'alias quast="'$QUAST_DIR'/quast.py"' >> ~/.bashrc
+        source ~/.bashrc  # Recargar el archivo de configuración
 
         # Marcar como éxito
         mark_status_success $QUAST_DIR
@@ -240,6 +250,9 @@ fi
 ########################################
 GATK_DIR="$BASE_DIR/gatk-4.2.5.0"
 echo "Verificando GATK..."
+
+# Eliminar la carpeta si ya existe pero no tiene el archivo .status
+delete_if_no_status $GATK_DIR
 
 if check_status_file $GATK_DIR; then
     echo "GATK ya está instalado correctamente."
@@ -281,6 +294,7 @@ else
 
         # Añadir alias para GATK
         echo 'alias gatk="'$GATK_DIR'/gatk"' >> ~/.bashrc
+        source ~/.bashrc  # Recargar el archivo de configuración
 
         # Marcar como éxito
         mark_status_success $GATK_DIR
@@ -291,7 +305,6 @@ else
         exit 1
     fi
 fi
-
 
 # ----------------------------------------------
 # Instalación de gdown para descargas grandes desde Google Drive
