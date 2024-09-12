@@ -74,7 +74,6 @@ check_success "unzip"
 echo -n "Instalando FastQC	  ---->	"
 (sudo apt-get install -y fastqc > /dev/null 2>&1) & spinner
 check_success "FastQC"
-sudo chmod +x /usr/bin/fastqc
 
 # ----------------------------------------------
 # Instalación de Trimmomatic (descarga con wget)
@@ -91,7 +90,6 @@ echo 'alias trimmomatic="java -jar '$BASE_DIR'/Trimmomatic-0.39/trimmomatic-0.39
 echo -n "Instalando BWA		  ---->	"
 (sudo apt-get install -y bwa > /dev/null 2>&1) & spinner
 check_success "BWA"
-sudo chmod +x /usr/bin/bwa
 
 # ----------------------------------------------
 # Instalación de Samtools
@@ -99,7 +97,6 @@ sudo chmod +x /usr/bin/bwa
 echo -n "Instalando Samtools	  ---->	"
 (sudo apt-get install -y samtools > /dev/null 2>&1) & spinner
 check_success "Samtools"
-sudo chmod +x /usr/bin/samtools
 
 # ----------------------------------------------
 # Instalación de SPAdes
@@ -107,7 +104,6 @@ sudo chmod +x /usr/bin/samtools
 echo -n "Instalando SPAdes	  ---->	"
 (sudo apt-get install -y spades > /dev/null 2>&1) & spinner
 check_success "SPAdes"
-sudo chmod +x /usr/bin/spades.py
 
 # ----------------------------------------------
 # Instalación de Pilon
@@ -115,7 +111,6 @@ sudo chmod +x /usr/bin/spades.py
 echo -n "Instalando Pilon	  ---->	"
 (sudo apt-get install -y pilon > /dev/null 2>&1) & spinner
 check_success "Pilon"
-sudo chmod +x /usr/bin/pilon
 
 # ----------------------------------------------
 # Instalación de Prokka
