@@ -170,8 +170,9 @@ delete_if_no_status() {
 # Función para marcar éxito en .status
 mark_status_success() {
     local dir=$1
-    sudo echo "true" > "$dir/.status"
+    echo "true" | sudo tee "$dir/.status" > /dev/null
 }
+
 
 # Función para eliminar directorio si falla la instalación
 delete_directory_if_failed() {
