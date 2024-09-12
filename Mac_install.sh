@@ -171,11 +171,47 @@ delete_directory_if_failed() {
     fi
 }
 
+check_status_file() {
+    local dir=$1
+    if [ -f "$dir/.status" ] && grep -q "true" "$dir/.status"; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Función para eliminar directorio si no existe el archivo .status
+delete_if_no_status() {
+    local dir=$1
+    if [ -d "$dir" ] && [ ! -f "$dir/.status" ]; then
+        echo "Eliminando la carpeta $dir porque no tiene un archivo .status."
+        rm -rf "$dir"
+    fi
+}
+
+# Función para marcar éxito en .status
+mark_status_success() {
+    local dir=$1
+    echo "true" > "$dir/.status"
+}
+
+# Función para eliminar directorio si falla la instalación
+delete_directory_if_failed() {
+    local dir=$1
+    if [ -d "$dir" ]; then
+        echo "Eliminando la carpeta $dir debido a un error..."
+        rm -rf "$dir"
+    fi
+}
+
 ########################################
-# Instalación de QUAST en macOS
+# Instalación de QUAST
 ########################################
 QUAST_DIR="$BASE_DIR/quast"
 echo "Verificando QUAST..."
+
+# Eliminar la carpeta si ya existe pero no tiene el archivo .status
+delete_if_no_status $QUAST_DIR
 
 if check_status_file $QUAST_DIR; then
     echo "QUAST ya está instalado correctamente."
@@ -232,10 +268,13 @@ else
 fi
 
 ########################################
-# Instalación de GATK en macOS
+# Instalación de GATK
 ########################################
 GATK_DIR="$BASE_DIR/gatk-4.2.5.0"
 echo "Verificando GATK..."
+
+# Eliminar la carpeta si ya existe pero no tiene el archivo .status
+delete_if_no_status $GATK_DIR
 
 if check_status_file $GATK_DIR; then
     echo "GATK ya está instalado correctamente."
