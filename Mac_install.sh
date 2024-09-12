@@ -6,6 +6,9 @@ sudo su
 mkdir -p "$HOME/Curso_ensamble_genomas/programas"
 mkdir -p "$HOME/Curso_ensamble_genomas/data"
 
+brew install wget  > /dev/null 2>&1
+
+
 # Verificar si existe el enlace simbólico para python en macOS
 if [ ! -e /usr/local/bin/python ]; then
     echo "Creando enlace simbólico para python3 como python en macOS"
