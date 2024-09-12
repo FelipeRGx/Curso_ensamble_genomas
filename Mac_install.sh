@@ -141,36 +141,6 @@ echo -n "Instalando SRA-Toolkit	  ---->	"
 (brew install sratoolkit > /dev/null 2>&1) & spinner
 check_success "SRA-Toolkit"
 
-# ----------------------------------------------
-# Descarga de QUAST desde GitHub y manejo de alias
-# ----------------------------------------------
-echo "Instalando QUAST	  ---->	"
-
-# Función para verificar el archivo .status
-check_status_file() {
-    local dir=$1
-    if [ -f "$dir/.status" ] && grep -q "true" "$dir/.status"; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-# Función para marcar éxito en .status
-mark_status_success() {
-    local dir=$1
-    echo "true" > "$dir/.status"
-}
-
-# Función para eliminar el directorio si falla la instalación
-delete_directory_if_failed() {
-    local dir=$1
-    if [ -d "$dir" ]; then
-        echo "Eliminando la carpeta $dir debido a un error..."
-        rm -rf "$dir"
-    fi
-}
-
 check_status_file() {
     local dir=$1
     if [ -f "$dir/.status" ] && grep -q "true" "$dir/.status"; then
