@@ -66,7 +66,7 @@ check_success() {
 # Actualizar el sistema en modo silencioso
 # ----------------------------------------------
 echo "Actualizando Homebrew y el sistema..."
-brew update > /dev/null 2>&1
+sudo brew update > /dev/null 2>&1
 echo "Sistema actualizado correctamente."
 
 # ----------------------------------------------
