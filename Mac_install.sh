@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Crear la carpeta 'programas' y 'data' en el directorio actual del usuario
-mkdir -p $HOME/Curso_ensamble_genomas/programas
-mkdir -p $HOME/Curso_ensamble_genomas/data
+# Crear de nuevo las carpetas
+mkdir -p "$HOME/Curso_ensamble_genomas/programas"
+mkdir -p "$HOME/Curso_ensamble_genomas/data"
 
 # Definir variable BASE_DIR para la ruta de instalación
 BASE_DIR=$HOME/Curso_ensamble_genomas/programas
@@ -12,22 +12,30 @@ DATA_DIR=$HOME/Curso_ensamble_genomas/data
 total_programas=14
 programas_instalados=0
 
+# Determinar cuál archivo de configuración usar para los alias
+if [ -f "$HOME/.zshrc" ]; then
+    SHELL_CONFIG="$HOME/.zshrc"
+elif [ -f "$HOME/.bash_profile" ]; then
+    SHELL_CONFIG="$HOME/.bash_profile"
+else
+    SHELL_CONFIG="$HOME/.bashrc"  # Para shells bash antiguos
+fi
+
+# Eliminar alias antiguos
+sed -i '' '/alias fastqc=/d' $SHELL_CONFIG
+sed -i '' '/alias trimmomatic=/d' $SHELL_CONFIG
+sed -i '' '/alias bwa=/d' $SHELL_CONFIG
+sed -i '' '/alias samtools=/d' $SHELL_CONFIG
+sed -i '' '/alias spades=/d' $SHELL_CONFIG
+sed -i '' '/alias pilon=/d' $SHELL_CONFIG
+sed -i '' '/alias prokka=/d' $SHELL_CONFIG
+sed -i '' '/alias bcftools=/d' $SHELL_CONFIG
+sed -i '' '/alias fasterq-dump=/d' $SHELL_CONFIG
+sed -i '' '/alias gatk=/d' $SHELL_CONFIG
+sed -i '' '/alias quast=/d' $SHELL_CONFIG
+source $SHELL_CONFIG
+
 echo "VERSION 5##%%%"
-
-
-# Eliminar los alias anteriores del .zshrc
-sed -i '' '/alias fastqc=/d' ~/.zshrc
-sed -i '' '/alias trimmomatic=/d' ~/.zshrc
-sed -i '' '/alias bwa=/d' ~/.zshrc
-sed -i '' '/alias samtools=/d' ~/.zshrc
-sed -i '' '/alias spades=/d' ~/.zshrc
-sed -i '' '/alias pilon=/d' ~/.zshrc
-sed -i '' '/alias prokka=/d' ~/.zshrc
-sed -i '' '/alias bcftools=/d' ~/.zshrc
-sed -i '' '/alias fasterq-dump=/d' ~/.zshrc
-sed -i '' '/alias gatk=/d' ~/.zshrc
-sed -i '' '/alias quast=/d' ~/.zshrc
-source ~/.zshrc
 
 # Spinner de carga
 spinner() {
@@ -51,32 +59,15 @@ check_success() {
         echo "$1 instalado correctamente."
     else
         echo "Error al instalar $1."
-        exit 1
     fi
 }
 
 # ----------------------------------------------
-# Instalación de Homebrew (si no está instalado)
+# Actualizar el sistema en modo silencioso
 # ----------------------------------------------
-if ! command -v brew &> /dev/null
-then
-    echo "Instalando Homebrew	  ---->	"
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" & spinner
-
-    if [ $? -ne 0 ]; then
-        echo "Error al instalar Homebrew. Abortando el script."
-        exit 1
-    else
-        echo "Homebrew instalado correctamente."
-    fi
-else
-    echo "Homebrew ya está instalado."
-fi
-
-# Actualizar Homebrew
-echo -n "Actualizando Homebrew	  ---->	"
-(brew update > /dev/null 2>&1) & spinner
-check_success "Homebrew update"
+echo "Actualizando Homebrew y el sistema..."
+brew update > /dev/null 2>&1
+echo "Sistema actualizado correctamente."
 
 # ----------------------------------------------
 # Instalación de unzip
@@ -91,11 +82,11 @@ check_success "unzip"
 echo -n "Instalando FastQC	  ---->	"
 (brew install fastqc > /dev/null 2>&1) & spinner
 check_success "FastQC"
-echo 'alias fastqc="/usr/local/bin/fastqc"' >> ~/.zshrc
 
 # ----------------------------------------------
-# Instalación de Trimmomatic
+# Instalación de Trimmomatic (descarga con wget)
 # ----------------------------------------------
+echo -n "Instalando Trimmomatic	  ---->	"
 echo -n "Instalando Trimmomatic	  ---->	"
 (brew install trimmomatic > /dev/null 2>&1) & spinner
 check_success "Trimmomatic"
@@ -106,7 +97,6 @@ check_success "Trimmomatic"
 echo -n "Instalando BWA		  ---->	"
 (brew install bwa > /dev/null 2>&1) & spinner
 check_success "BWA"
-echo 'alias bwa="/usr/local/bin/bwa"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de Samtools
@@ -114,7 +104,6 @@ echo 'alias bwa="/usr/local/bin/bwa"' >> ~/.zshrc
 echo -n "Instalando Samtools	  ---->	"
 (brew install samtools > /dev/null 2>&1) & spinner
 check_success "Samtools"
-echo 'alias samtools="/usr/local/bin/samtools"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de SPAdes
@@ -122,7 +111,6 @@ echo 'alias samtools="/usr/local/bin/samtools"' >> ~/.zshrc
 echo -n "Instalando SPAdes	  ---->	"
 (brew install spades > /dev/null 2>&1) & spinner
 check_success "SPAdes"
-echo 'alias spades="/usr/local/bin/spades.py"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de Pilon
@@ -130,15 +118,14 @@ echo 'alias spades="/usr/local/bin/spades.py"' >> ~/.zshrc
 echo -n "Instalando Pilon	  ---->	"
 (brew install pilon > /dev/null 2>&1) & spinner
 check_success "Pilon"
-echo 'alias pilon="/usr/local/bin/pilon"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de Prokka
 # ----------------------------------------------
 echo -n "Instalando Prokka	  ---->	"
+brew tap brewsci/bio > /dev/null 2>&1
 (brew install prokka > /dev/null 2>&1) & spinner
 check_success "Prokka"
-echo 'alias prokka="/usr/local/bin/prokka"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de BCFtools
@@ -146,97 +133,194 @@ echo 'alias prokka="/usr/local/bin/prokka"' >> ~/.zshrc
 echo -n "Instalando BCFtools	  ---->	"
 (brew install bcftools > /dev/null 2>&1) & spinner
 check_success "BCFtools"
-echo 'alias bcftools="/usr/local/bin/bcftools"' >> ~/.zshrc
 
 # ----------------------------------------------
 # Instalación de SRA-Toolkit
 # ----------------------------------------------
 echo -n "Instalando SRA-Toolkit	  ---->	"
-(brew install sra-tools > /dev/null 2>&1) & spinner
+(brew install sratoolkit > /dev/null 2>&1) & spinner
 check_success "SRA-Toolkit"
-echo 'alias fasterq-dump="/usr/local/bin/fasterq-dump"' >> ~/.zshrc
 
 # ----------------------------------------------
-# Instalación de GATK (descarga con wget)
-# ----------------------------------------------
-echo -n "Instalando GATK		  ---->	"
-(wget https://github.com/broadinstitute/gatk/releases/download/4.2.5.0/gatk-4.2.5.0.zip -P $BASE_DIR > /dev/null 2>&1 && unzip $BASE_DIR/gatk-4.2.5.0.zip -d $BASE_DIR > /dev/null 2>&1 && rm $BASE_DIR/gatk-4.2.5.0.zip) & spinner
-check_success "GATK"
-chmod +x $BASE_DIR/gatk-4.2.5.0/gatk
-echo 'alias gatk="'$BASE_DIR'/gatk-4.2.5.0/gatk"' >> ~/.zshrc
-
-# ----------------------------------------------
-# Instalación de QUAST desde GitHub (con corrección)
+# Descarga de QUAST desde GitHub y manejo de alias
 # ----------------------------------------------
 echo "Instalando QUAST	  ---->	"
-(sudo git clone https://github.com/ablab/quast.git $BASE_DIR/quast > /dev/null 2>&1) & spinner
 
-# Cambiar permisos del directorio para evitar problemas
-chmod -R 755 $BASE_DIR
+# Función para verificar el archivo .status
+check_status_file() {
+    local dir=$1
+    if [ -f "$dir/.status" ] && grep -q "true" "$dir/.status"; then
+        return 0
+    else
+        return 1
+    fi
+}
 
-# Corrección en jsontemplate.py (cgi.escape -> html.escape)
-sed -i '' 's/cgi.escape/html.escape/g' $BASE_DIR/quast/quast_libs/site_packages/jsontemplate/jsontemplate.py
-sed -i '' '1i\
-import html' $BASE_DIR/quast/quast_libs/site_packages/jsontemplate/jsontemplate.py
+# Función para marcar éxito en .status
+mark_status_success() {
+    local dir=$1
+    echo "true" > "$dir/.status"
+}
 
-# Instalación de dependencias en la carpeta BASE_DIR
-cd $BASE_DIR/quast
-pip3 install -r requirements.txt --target=$BASE_DIR/quast_dependencies > /dev/null 2>&1
+# Función para eliminar el directorio si falla la instalación
+delete_directory_if_failed() {
+    local dir=$1
+    if [ -d "$dir" ]; then
+        echo "Eliminando la carpeta $dir debido a un error..."
+        rm -rf "$dir"
+    fi
+}
 
-# Instalación de QUAST en BASE_DIR usando --prefix
-python3 setup.py install --prefix=$BASE_DIR > /dev/null 2>&1
+########################################
+# Instalación de QUAST en macOS
+########################################
+QUAST_DIR="$BASE_DIR/quast"
+echo "Verificando QUAST..."
 
-# Asegurar permisos de ejecución
-chmod +x $BASE_DIR/quast/quast.py
-
-# Verificación de instalación
-echo 'alias quast="'$BASE_DIR'/quast/quast.py"' >> ~/.zshrc
-check_success "QUAST"
-
-# ----------------------------------------------
-# Instalación de gdown para descargas grandes desde Google Drive
-# ----------------------------------------------
-echo -n "Instalando gdown	  ---->	"
-
-echo -n "Instalando gdown (método 1)	  ---->	"
-
-
-brew install -y python3 python3-pip  > /dev/null 2>&1
-python3 -m pip install --upgrade pip > /dev/null 2>&1
-(sudo pip3 install gdown > /dev/null 2>&1) & spinner
-(sudo pip install gdown --break-system-packages> /dev/null 2>&1) & spinner
-python3 -m venv myenv
-
-python3 -m venv myenv
-source myenv/bin/activate
-pip install --upgrade pip
-pip3 install gdown
-
-check_success "gdown"
-
-
-# Verificar si gdown está disponible después de ambos métodos
-if command -v gdown &> /dev/null; then
-  echo "gdown se instaló correctamente."
+if check_status_file $QUAST_DIR; then
+    echo "QUAST ya está instalado correctamente."
 else
-  echo "Error: ERROR NO SE  PUDO gdown."
+    echo "Instalando QUAST..."
+    (brew update > /dev/null 2>&1) & spinner
+    (brew install pkg-config freetype libpng python-matplotlib > /dev/null 2>&1) & spinner
+
+    # Número máximo de reintentos
+    max_retries=5
+    retry_count=0
+    success=false
+
+    # Intentar descargar QUAST hasta el máximo número de intentos
+    while [ $retry_count -lt $max_retries ]; do
+        echo "Descargando QUAST desde https://github.com/ablab/quast.git..."
+        if git clone --progress https://github.com/ablab/quast.git $QUAST_DIR 2>&1 | tee >(grep "Compressing objects\|Receiving objects"); then
+            # Aplicar permisos a toda la carpeta
+            chmod -R 755 $QUAST_DIR
+            success=true
+            break
+        else
+            retry_count=$((retry_count+1))
+            sleep 15 # Esperar 15 segundos antes de reintentar
+        fi
+    done
+
+    if [ "$success" = true ]; then
+        echo "Descarga de QUAST exitosa."
+
+        # Verificar si el archivo requirements.txt existe y corregir jsontemplate.py
+        if [ -f "$QUAST_DIR/quast_libs/site_packages/jsontemplate/jsontemplate.py" ]; then
+            sed -i '' 's/cgi.escape/html.escape/g' $QUAST_DIR/quast_libs/site_packages/jsontemplate/jsontemplate.py > /dev/null 2>&1
+            sed -i '' '1i import html' $QUAST_DIR/quast_libs/site_packages/jsontemplate/jsontemplate.py > /dev/null 2>&1
+        fi
+
+        # Instalación de dependencias y permisos
+        cd $QUAST_DIR
+        chmod +x quast.py
+        python3 ./setup.py install > /dev/null 2>&1
+
+        # Añadir alias para QUAST en el shell de macOS
+        echo 'alias quast="'$QUAST_DIR'/quast.py"' >> ~/.zshrc
+        source ~/.zshrc  # Recargar el archivo de configuración
+
+        # Marcar como éxito
+        mark_status_success $QUAST_DIR
+        echo "QUAST instalado correctamente."
+    else
+        echo -e "\e[31mError en tu conexión. Inténtalo más tarde.\e[0m"
+        delete_directory_if_failed $QUAST_DIR
+        exit 1
+    fi
 fi
 
-# ----------------------------------------------
-# Descarga de archivos desde Google Drive usando gdown
-# ----------------------------------------------
-echo "Descargando archivos desde Google Drive en ~/data	  ---->	"
-gdown 1aZ6iKs-Z7HymPiVQ2t1xf-_ajj4CK-03 -O $DATA_DIR/fastq.zip
-gdown 151PeMSeGnQJstXOvMOn8ArbbG49JIXes -O $DATA_DIR/reference.fasta
+########################################
+# Instalación de GATK en macOS
+########################################
+GATK_DIR="$BASE_DIR/gatk-4.2.5.0"
+echo "Verificando GATK..."
+
+if check_status_file $GATK_DIR; then
+    echo "GATK ya está instalado correctamente."
+else
+    echo "Instalando GATK..."
+
+    # Restablecer los contadores para GATK
+    retry_count=0
+    success=false
+
+    # Intentar descargar GATK hasta el máximo número de intentos
+    while [ $retry_count -lt $max_retries ]; do
+        echo "Descargando GATK..."
+        if wget --progress=dot:giga https://github.com/broadinstitute/gatk/releases/download/4.2.5.0/gatk-4.2.5.0.zip -P $BASE_DIR 2>&1 | grep -o -E "([0-9]+%)"; then
+            success=true
+            break
+        else
+            retry_count=$((retry_count+1))
+            sleep 5 # Esperar 5 segundos antes de reintentar
+        fi
+    done
+
+    if [ "$success" = true ]; then
+        # Descomprimir el archivo descargado
+        unzip $BASE_DIR/gatk-4.2.5.0.zip -d $BASE_DIR > /dev/null 2>&1
+
+        # Verificar si el archivo gatk existe
+        if [ ! -f "$GATK_DIR/gatk" ]; then
+            echo "Error: No se encuentra el archivo ejecutable gatk"
+            delete_directory_if_failed $GATK_DIR
+            exit 1
+        fi
+
+        # Eliminar el archivo zip después de la descompresión
+        rm $BASE_DIR/gatk-4.2.5.0.zip > /dev/null 2>&1
+
+        # Asignar permisos de ejecución
+        chmod -R 755 $GATK_DIR > /dev/null 2>&1
+
+        # Añadir alias para GATK en el shell de macOS
+        echo 'alias gatk="'$GATK_DIR'/gatk"' >> ~/.zshrc
+        source ~/.zshrc  # Recargar el archivo de configuración
+
+        # Marcar como éxito
+        mark_status_success $GATK_DIR
+        echo "GATK instalado correctamente."
+    else
+        echo -e "\e[31mError en tu conexión. Inténtalo más tarde.\e[0m"
+        delete_directory_if_failed $GATK_DIR
+        exit 1
+    fi
+fi
+
+echo "Descargando archivos desde Dropbox en ~/data	  ---->	"
+
+# Verificar si wget está instalado
+if ! command -v wget &> /dev/null; then
+    echo "Instalando wget..."
+    brew install wget > /dev/null 2>&1
+fi
+
+# Descargar fastq.zip
+wget -O $DATA_DIR/fastq.zip "https://www.dropbox.com/scl/fi/07yop16imcdkdgtfqmabf/fastq.zip?rlkey=m65e9u15w4d640hbnm1ci6xgv&st=afk913km&dl=1"
+
+# Descargar reference.fasta
+wget -O $DATA_DIR/reference.fasta "https://www.dropbox.com/scl/fi/gvq2qvamu0iegjkgemy54/reference.fasta?rlkey=4b3d4exwea2tgrlhyu6n61zd7&st=rcjv34gr&dl=1"
+
+# Verificar si los archivos se descargaron correctamente
+if [[ -f "$DATA_DIR/fastq.zip" && -f "$DATA_DIR/reference.fasta" ]]; then
+    echo "Archivos descargados correctamente desde Dropbox."
+else
+    echo -e "\e[31mError en la descarga de los archivos desde Dropbox.\e[0m"
+    exit 1
+fi
 
 # ----------------------------------------------
 # Descomprimir el archivo ZIP
 # ----------------------------------------------
 echo "Descomprimiendo archivo ZIP	  ---->	"
-tar -xvzf $DATA_DIR/fastq.zip -C $DATA_DIR
+unzip $DATA_DIR/fastq.zip -d $DATA_DIR > /dev/null 2>&1
 
-# Cargar el archivo .zshrc para aplicar los alias
-source ~/.zshrc
-
-# Resumen
-echo "Instalación completada: $programas_instalados/$total_programas programas instalados correctamente."
+# Verificar si la descompresión fue exitosa
+if [ $? -eq 0 ]; then
+    echo "Archivo ZIP descomprimido correctamente."
+else
+    echo -e "\e[31mError al descomprimir el archivo ZIP.\e[0m"
+    exit 1
+fi
